@@ -1,0 +1,44 @@
+:root {
+  color: #f5f7ff;
+  background: #111827;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+body {
+  display: grid;
+  min-height: 100vh;
+  margin: 0;
+  place-items: center;
+  background: radial-gradient(circle at top, #283d73, #111827 60%);
+}
+
+.card {
+  width: min(420px, calc(100% - 48px));
+  box-sizing: border-box;
+  padding: 36px;
+  border: 1px solid #4c6297;
+  border-radius: 20px;
+  background: rgb(17 24 39 / 88%);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 30%);
+}
+
+h1 { margin: 0 0 8px; }
+.eyebrow, .label { color: #a9b8df; font-size: 12px; font-weight: 700; letter-spacing: .1em; }
+.network, .message { color: #c7d2fe; }
+.value, .expiry { overflow-wrap: anywhere; }
+.status { font-size: 20px; font-weight: 700; }
+.active { color: #6ee7b7; }
+.expired { color: #fca5a5; }
+button {
+  width: 100%;
+  padding: 13px 16px;
+  border: 0;
+  border-radius: 10px;
+  color: #071328;
+  background: #93c5fd;
+  cursor: pointer;
+  font-weight: 800;
+}
+button:disabled { cursor: wait; opacity: .6; }
+#membership { margin-top: 28px; }
+.message { min-height: 24px; font-size: 14px; }

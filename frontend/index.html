@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subscription NFT</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="card">
+      <p class="eyebrow">SEPOLIA MEMBERSHIP</p>
+      <h1>链上订阅会员</h1>
+      <p id="network" class="network">请连接 Sepolia 钱包</p>
+      <button id="connectButton">连接钱包</button>
+      <section id="membership" hidden>
+        <p class="label">钱包地址</p>
+        <p id="account" class="value"></p>
+        <p class="label">会员状态</p>
+        <p id="status" class="status"></p>
+        <p id="expiry" class="expiry"></p>
+        <button id="subscribeButton">立即订阅 · 0.01 ETH / 30 天</button>
+      </section>
+      <p id="message" class="message" role="status"></p>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+    <script src="./config.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
