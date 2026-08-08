@@ -1,93 +1,58 @@
-const { contractAddress, chainId, chainName } = window.SUBSCRIPTION_CONFIG;
-const abi = [
-  "function subscriptionPrice() view returns (uint128)",
-  "function membershipOf(address) view returns (uint256 tokenId, uint64 expiry, bool active)",
-  "function subscribe() payable"
-];
-
-let provider;
-let signer;
-let contract;
-let account;
-
-const connectButton = document.querySelector("#connectButton");
-const subscribeButton = document.querySelector("#subscribeButton");
-const message = document.querySelector("#message");
-
-function setMessage(text) {
-  message.textContent = text;
-}
-
-function formatError(error) {
-  if (error.code === 4001 || error.code === "ACTION_REJECTED") return "你已取消钱包签名。";
-  if (error.code === "INSUFFICIENT_FUNDS") return "钱包余额不足以支付订阅费和 Gas。";
-  return error.shortMessage || error.info?.error?.message || error.message || "交易失败，请稍后重试。";
-}
-
-function requireDeployedContract() {
-  if (contractAddress === "0x0000000000000000000000000000000000000000") {
-    throw new Error("合约尚未配置。请在 config.js 中填入 Sepolia 代理合约地址。");
+const states = {
+  active: {
+    badge: "ACTIVE",
+    badgeClass: "active",
+    date: "2026年9月8日",
+    days: "剩余 30 天",
+    button: "模拟续费 30 天",
+    message: "当前会员有效，可以直接续费。"
+  },
+  renewed: {
+    badge: "ACTIVE",
+    badgeClass: "active",
+    date: "2026年10月8日",
+    days: "剩余 60 天",
+    button: "已模拟续费",
+    message: "NFT 编号保持 #001，到期时间已在原有基础上增加 30 天。"
+  },
+  expired: {
+    badge: "EXPIRED",
+    badgeClass: "expired",
+    date: "2026年7月9日",
+    days: "权益已失效",
+    button: "模拟重新订阅",
+    message: "NFT 仍在钱包中，但 isActive() 返回 false，权益不可用。"
+  },
+  operator: {
+    badge: "ACTIVE",
+    badgeClass: "active",
+    date: "2026年9月15日",
+    days: "剩余 37 天",
+    button: "运营补偿已生效",
+    message: "OPERATOR_ROLE 已为现有 NFT 增加 7 天有效期，无需铸造新 NFT。"
   }
+};
+
+const badge = document.querySelector("#demoBadge");
+const expiryDate = document.querySelector("#expiryDate");
+const remainingDays = document.querySelector("#remainingDays");
+const renewButton = document.querySelector("#renewButton");
+const demoMessage = document.querySelector("#demoMessage");
+const flowSteps = document.querySelectorAll(".flow-step");
+
+function renderState(name) {
+  const state = states[name];
+  badge.textContent = state.badge;
+  badge.className = `badge ${state.badgeClass}`;
+  expiryDate.textContent = state.date;
+  remainingDays.textContent = state.days;
+  renewButton.textContent = state.button;
+  demoMessage.textContent = state.message;
+  flowSteps.forEach((step) => step.classList.toggle("selected", step.dataset.state === name));
 }
 
-async function refreshMembership() {
-  const [tokenId, expiry, active] = await contract.membershipOf(account);
-  const status = document.querySelector("#status");
-  const expiryElement = document.querySelector("#expiry");
-  const action = tokenId === 0n ? "立即订阅" : "续费 30 天";
+flowSteps.forEach((step) => {
+  step.addEventListener("click", () => renderState(step.dataset.state));
+});
 
-  subscribeButton.textContent = `${action} · 0.01 ETH / 30 天`;
-  status.textContent = active ? "会员有效" : tokenId === 0n ? "尚未订阅" : "权益已失效";
-  status.className = `status ${active ? "active" : "expired"}`;
-
-  if (tokenId !== 0n) {
-    const expiryDate = new Date(Number(expiry) * 1000);
-    expiryElement.textContent = `会员有效期至：${expiryDate.toLocaleString("zh-CN")}`;
-  } else {
-    expiryElement.textContent = "订阅后即可获得不可转让的会员 NFT。";
-  }
-}
-
-async function connect() {
-  try {
-    if (!window.ethereum) throw new Error("未检测到钱包。请安装 MetaMask 或兼容的钱包扩展。");
-    requireDeployedContract();
-    provider = new ethers.BrowserProvider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    const network = await provider.getNetwork();
-    if (Number(network.chainId) !== chainId) {
-      await provider.send("wallet_switchEthereumChain", [{ chainId: `0x${chainId.toString(16)}` }]);
-    }
-
-    signer = await provider.getSigner();
-    account = await signer.getAddress();
-    contract = new ethers.Contract(contractAddress, abi, signer);
-    document.querySelector("#account").textContent = account;
-    document.querySelector("#network").textContent = `已连接 ${chainName}`;
-    document.querySelector("#membership").hidden = false;
-    connectButton.hidden = true;
-    await refreshMembership();
-  } catch (error) {
-    setMessage(formatError(error));
-  }
-}
-
-async function subscribe() {
-  try {
-    subscribeButton.disabled = true;
-    setMessage("正在请求钱包签名...");
-    const price = await contract.subscriptionPrice();
-    const transaction = await contract.subscribe({ value: price });
-    setMessage("交易已提交，正在等待链上确认...");
-    await transaction.wait();
-    setMessage("订阅已生效。");
-    await refreshMembership();
-  } catch (error) {
-    setMessage(formatError(error));
-  } finally {
-    subscribeButton.disabled = false;
-  }
-}
-
-connectButton.addEventListener("click", connect);
-subscribeButton.addEventListener("click", subscribe);
+renewButton.addEventListener("click", () => renderState("renewed"));

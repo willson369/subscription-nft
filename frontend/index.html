@@ -3,27 +3,129 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Subscription NFT</title>
+    <meta
+      name="description"
+      content="Subscription NFT - 可升级、不可转让的链上订阅会员系统作品展示。"
+    />
+    <title>Subscription NFT | 链上会员系统</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="card">
-      <p class="eyebrow">SEPOLIA MEMBERSHIP</p>
-      <h1>链上订阅会员</h1>
-      <p id="network" class="network">请连接 Sepolia 钱包</p>
-      <button id="connectButton">连接钱包</button>
-      <section id="membership" hidden>
-        <p class="label">钱包地址</p>
-        <p id="account" class="value"></p>
-        <p class="label">会员状态</p>
-        <p id="status" class="status"></p>
-        <p id="expiry" class="expiry"></p>
-        <button id="subscribeButton">立即订阅 · 0.01 ETH / 30 天</button>
+    <header class="site-header">
+      <a class="brand" href="#">SUB<span>NFT</span></a>
+      <a
+        class="source-link"
+        href="https://github.com/willson369/subscription-nft"
+        target="_blank"
+        rel="noreferrer"
+      >查看源码 ↗</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p class="eyebrow">WEB3 PRODUCT DEMO · SEPOLIA READY</p>
+        <h1>把一次付款，变成<br /><em>可验证的会员权益。</em></h1>
+        <p class="hero-copy">
+          一个可升级、不可转让的链上订阅 NFT 系统。用户付款铸造会员凭证，续费只延长有效期，过期后权益自动失效。
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#demo">体验交互演示</a>
+          <a class="button secondary" href="#architecture">查看技术架构</a>
+        </div>
+        <div class="hero-meta">
+          <span>0.01 ETH / 30 天</span><span>UUPS Proxy</span><span>Soulbound NFT</span>
+        </div>
       </section>
-      <p id="message" class="message" role="status"></p>
+
+      <section id="demo" class="demo-section">
+        <div class="section-heading">
+          <p class="eyebrow">INTERACTIVE DEMO</p>
+          <h2>无需钱包，也能看懂核心流程。</h2>
+          <p>这是浏览器内模拟，不会发起任何链上交易或收集数据。</p>
+        </div>
+        <div class="demo-grid">
+          <article class="membership-card">
+            <div class="card-top">
+              <span>MEMBERSHIP #001</span>
+              <span id="demoBadge" class="badge active">ACTIVE</span>
+            </div>
+            <p class="wallet">0x7A4e...9B21</p>
+            <div class="expiry-block">
+              <span>会员有效期至</span>
+              <strong id="expiryDate">2026年9月8日</strong>
+              <small id="remainingDays">剩余 30 天</small>
+            </div>
+            <button id="renewButton" class="button primary">模拟续费 30 天</button>
+            <p id="demoMessage" class="demo-message">当前会员有效，可以直接续费。</p>
+          </article>
+          <div class="flow-panel">
+            <button class="flow-step selected" data-state="active">
+              <span class="step-number">01</span>
+              <span><strong>首次订阅</strong><small>付款后铸造唯一会员 NFT</small></span>
+            </button>
+            <button class="flow-step" data-state="renewed">
+              <span class="step-number">02</span>
+              <span><strong>续费</strong><small>不重复铸造，只累加有效期</small></span>
+            </button>
+            <button class="flow-step" data-state="expired">
+              <span class="step-number">03</span>
+              <span><strong>权益过期</strong><small>NFT 保留，系统权益自动失效</small></span>
+            </button>
+            <button class="flow-step" data-state="operator">
+              <span class="step-number">04</span>
+              <span><strong>运营补偿</strong><small>授权运营节点可手动延长时间</small></span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="architecture" class="architecture">
+        <div class="section-heading">
+          <p class="eyebrow">ENGINEERING HIGHLIGHTS</p>
+          <h2>面向真实产品的合约设计。</h2>
+        </div>
+        <div class="feature-grid">
+          <article>
+            <span class="feature-icon">↗</span>
+            <h3>UUPS 可升级</h3>
+            <p>逻辑与数据分离。未来修复 Bug 或扩展功能时，用户无需更换 NFT 或迁移资产。</p>
+          </article>
+          <article>
+            <span class="feature-icon">◎</span>
+            <h3>灵魂绑定会员</h3>
+            <p>禁止钱包间转让，会员资格不能被二级市场转卖，确保权益归属清晰。</p>
+          </article>
+          <article>
+            <span class="feature-icon">⌁</span>
+            <h3>精确的时间逻辑</h3>
+            <p>未过期续费从原到期日累加；过期后从当前时间重启，所有状态由链上时间决定。</p>
+          </article>
+          <article>
+            <span class="feature-icon">⌘</span>
+            <h3>角色与应急控制</h3>
+            <p>管理员可暂停、升级和提款；运营角色只可补偿延期，最小化日常操作权限。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="code-section">
+        <div>
+          <p class="eyebrow">QUALITY ASSURANCE</p>
+          <h2>9 项自动化合约测试<br />覆盖核心状态流转。</h2>
+        </div>
+        <ul>
+          <li><span>✓</span> 首购铸造与精确支付验证</li>
+          <li><span>✓</span> 有效及过期会员的续费计算</li>
+          <li><span>✓</span> 不可转让限制与权限边界</li>
+          <li><span>✓</span> 暂停、提款与 UUPS 升级授权</li>
+        </ul>
+      </section>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
-    <script src="./config.js"></script>
+
+    <footer>
+      <span>SUBSCRIPTION NFT · PORTFOLIO PROJECT</span>
+      <a href="https://github.com/willson369/subscription-nft" target="_blank" rel="noreferrer">GitHub Repository ↗</a>
+    </footer>
     <script src="./app.js"></script>
   </body>
 </html>
