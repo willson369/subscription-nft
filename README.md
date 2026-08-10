@@ -26,6 +26,17 @@ npm run compile
 npm test
 ```
 
+## 新增：申论 AI 批改后端（MVP）
+
+仓库内新增 `shenlun-ai-backend/`，用于独立承载申论批改系统的 FastAPI 后端原型（不影响现有 NFT 功能）。
+
+```powershell
+Set-Location shenlun-ai-backend
+python -m pip install -r requirements.txt
+python -m pytest tests -q
+uvicorn app.main:app --reload --port 8000
+```
+
 启动前端：
 
 ```powershell
