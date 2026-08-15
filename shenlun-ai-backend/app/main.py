@@ -1,6 +1,11 @@
 from datetime import UTC, datetime
+from pathlib import Path
+
 import httpx
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 from .config import DEFAULT_PROMPT_TEMPLATE, settings
@@ -33,13 +38,24 @@ from .schemas import (
 from .services.grading import generate_grading_report
 from .utils.text import estimate_word_count
 
+STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+
 
 def now_utc() -> datetime:
     return datetime.now(UTC)
 
 
 def create_app(database_url: str | None = None) -> FastAPI:
-    app = FastAPI(title="Shenlun AI Grading API", version="0.1.0")
+    app = FastAPI(title="Shenlun AI Grading API", version="0.2.0")
+
+    origins = [o.strip() for o in settings.cors_origins.split(",") if o.strip()]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins or ["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     engine = build_engine(database_url or settings.database_url)
     session_factory = build_session_factory(engine)
@@ -367,7 +383,19 @@ def create_app(database_url: str | None = None) -> FastAPI:
 
     @app.get("/healthz")
     def healthz():
-        return {"status": "ok"}
+        return {
+            "status": "ok",
+            "provider": settings.grading_model_provider,
+            "model": settings.grading_model_name,
+            "api_key_configured": bool(settings.openai_api_key),
+        }
+
+    if STATIC_DIR.exists():
+        app.mount("/assets", StaticFiles(directory=STATIC_DIR), name="assets")
+
+        @app.get("/")
+        def index():
+            return FileResponse(STATIC_DIR / "index.html")
 
     return app
 

@@ -1,14 +1,24 @@
 from pydantic import BaseModel
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
+
+def _resolve_api_key() -> str | None:
+    return os.getenv("DEEPSEEK_API_KEY") or os.getenv("OPENAI_API_KEY")
 
 
 class Settings(BaseModel):
     database_url: str = os.getenv("DATABASE_URL", "sqlite:///./shenlun_ai.db")
-    grading_model_provider: str = os.getenv("GRADING_MODEL_PROVIDER", "mock")
-    grading_model_name: str = os.getenv("GRADING_MODEL_NAME", "shenlun-heuristic-v1")
-    openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
-    openai_base_url: str = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
-    openai_timeout_seconds: float = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "60"))
+    grading_model_provider: str = os.getenv("GRADING_MODEL_PROVIDER", "deepseek")
+    grading_model_name: str = os.getenv("GRADING_MODEL_NAME", "deepseek-chat")
+    openai_api_key: str | None = _resolve_api_key()
+    openai_base_url: str = os.getenv("OPENAI_BASE_URL", "https://api.deepseek.com/v1")
+    openai_timeout_seconds: float = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "90"))
+    cors_origins: str = os.getenv("CORS_ORIGINS", "*")
 
 
 DEFAULT_PROMPT_TEMPLATE = (

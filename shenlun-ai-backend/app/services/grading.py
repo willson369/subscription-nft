@@ -205,9 +205,12 @@ def generate_grading_report(
             scoring_standard=scoring_standard,
             target_score=target_score,
         )
-    if provider == "openai":
+    if provider in {"openai", "deepseek"}:
         if not openai_api_key:
-            raise ValueError("OPENAI_API_KEY is required when provider is 'openai'.")
+            raise ValueError(
+                "DEEPSEEK_API_KEY or OPENAI_API_KEY is required when provider is "
+                f"'{provider}'."
+            )
         return generate_openai_report(
             question_text=question_text,
             essay_text=essay_text,
