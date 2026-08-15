@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="申论 AI 批改：提交题干与作文，获取分数、问题诊断与修改计划。" />
+    <title>申论 AI 批改</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=ZCOOL+XiaoWei&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">申</span>
+          <div>
+            <strong>申论 AI 批改</strong>
+            <p>DeepSeek 驱动 · 立意 / 结构 / 论证 / 语言</p>
+          </div>
+        </div>
+        <div id="modelBadge" class="model-badge">检测模型中…</div>
+      </header>
+
+      <main class="layout">
+        <section class="panel compose">
+          <h1>提交作文</h1>
+          <p class="lead">粘贴题干与正文，系统异步批改并返回可执行修改建议。</p>
+
+          <label>
+            标题
+            <input id="title" type="text" maxlength="200" value="基层治理现代化" />
+          </label>
+
+          <label>
+            题干 / 材料摘要
+            <textarea id="question" rows="4">请围绕基层治理现代化写一篇申论文章，谈谈你的理解与建议。</textarea>
+          </label>
+
+          <label>
+            申论正文
+            <textarea id="essay" rows="14" placeholder="在此粘贴完整作文…"></textarea>
+          </label>
+
+          <div class="compose-meta">
+            <span id="wordCount">字数 0</span>
+            <label class="inline">
+              目标分
+              <input id="targetScore" type="number" min="0" max="100" value="80" />
+            </label>
+          </div>
+
+          <button id="submitBtn" class="primary" type="button">开始批改</button>
+          <p id="statusText" class="status" aria-live="polite"></p>
+        </section>
+
+        <section class="panel result" id="resultPanel" hidden>
+          <div class="score-head">
+            <div>
+              <p class="eyebrow">综合得分</p>
+              <p id="overallScore" class="score">--</p>
+            </div>
+            <div id="dimensionScores" class="dims"></div>
+          </div>
+
+          <article>
+            <h2>总评</h2>
+            <p id="summary"></p>
+          </article>
+
+          <div class="two-col">
+            <article>
+              <h2>主要问题</h2>
+              <ul id="keyIssues"></ul>
+            </article>
+            <article>
+              <h2>修改计划</h2>
+              <ol id="revisionPlan"></ol>
+            </article>
+          </div>
+
+          <div class="meta-row">
+            <span id="tokenUsage"></span>
+            <span id="latency"></span>
+            <span id="providerInfo"></span>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="/assets/app.js"></script>
+  </body>
+</html>

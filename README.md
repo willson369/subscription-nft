@@ -26,13 +26,20 @@ npm run compile
 npm test
 ```
 
-启动前端：
+## 新增：申论 AI 批改（DeepSeek）
+
+仓库内 `shenlun-ai-backend/` 提供申论 AI 批改前后端（默认 DeepSeek，可部署到 Railway）。
 
 ```powershell
-npm run web
+Set-Location shenlun-ai-backend
+Copy-Item .env.example .env
+# 填入 DEEPSEEK_API_KEY
+python -m pip install -r requirements.txt
+python -m pytest tests -q
+uvicorn app.main:app --reload --port 8000
 ```
 
-访问终端显示的本地地址。首次部署后，将代理合约地址填入 `frontend/config.js` 的 `contractAddress`。
+浏览器打开 `http://127.0.0.1:8000` 即可提交作文并查看批改结果。
 
 ## 部署到 Sepolia
 
