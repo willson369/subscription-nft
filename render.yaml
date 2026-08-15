@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: shenlun-ai
+    runtime: docker
+    rootDir: shenlun-ai-backend
+    plan: free
+    healthCheckPath: /healthz
+    envVars:
+      - key: GRADING_MODEL_PROVIDER
+        value: deepseek
+      - key: GRADING_MODEL_NAME
+        value: deepseek-chat
+      - key: OPENAI_BASE_URL
+        value: https://api.deepseek.com/v1
+      - key: OPENAI_TIMEOUT_SECONDS
+        value: "90"
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: DEEPSEEK_API_KEY
+        sync: false
